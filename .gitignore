@@ -1,0 +1,5 @@
+env
+*.log
+PaWebControl
+mopidy-*
+mopidy.conf
