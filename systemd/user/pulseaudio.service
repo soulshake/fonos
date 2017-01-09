@@ -1,0 +1,10 @@
+[Unit]
+Description=PulseAudio Daemon
+ 
+[Install]
+WantedBy=default.target
+ 
+[Service]
+Type=simple
+ExecStart=/usr/bin/pulseaudio --file /home/pi/fonos/init.pa -v
+

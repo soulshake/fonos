@@ -1,0 +1,10 @@
+[Unit]
+Description=MoPiDy Daemon
+ 
+[Install]
+WantedBy=default.target
+ 
+[Service]
+Type=simple
+ExecStart=/home/pi/fonos/env/bin/mopidy --config /home/pi/fonos/mopidy/mopidy.conf
+

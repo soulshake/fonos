@@ -6,5 +6,6 @@ sudo apt-get install -y \
     python-virtualenv \
     git \
     pulseaudio \
+    pulseaudio-module-zeroconf \
     libffi-dev \
     libspotify-dev # for pyspotify

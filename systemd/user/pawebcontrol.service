@@ -1,0 +1,10 @@
+[Unit]
+Description=PulseAudio Web Control
+ 
+[Install]
+WantedBy=default.target
+ 
+[Service]
+Type=simple
+ExecStart=/usr/bin/php -S 0.0.0.0:8000 -t /home/pi/fonos/PaWebControl/source/
+

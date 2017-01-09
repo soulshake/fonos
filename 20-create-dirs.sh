@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mkdir -p mopidy-playlists mopidy-media
+mkdir -p mopidy/playlists mopidy/media
