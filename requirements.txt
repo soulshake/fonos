@@ -1,3 +1,15 @@
 mopidy
-mopidy-mopify
+
 mopidy-soundcloud
+pafy==0.5.2
+mopidy-youtube
+mopidy-spotify-tunigo
+mopidy-radio-de
+
+# web interfaces
+mopidy-mopify
+mopidy-material-webclient
+mopidy-mobile
+mopidy-moped
+mopidy-musicbox-webclient
+mopidy-spotmop

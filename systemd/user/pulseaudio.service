@@ -6,5 +6,5 @@ WantedBy=default.target
  
 [Service]
 Type=simple
-ExecStart=/usr/bin/pulseaudio --file /home/pi/fonos/init.pa -v
+ExecStart=/usr/bin/pulseaudio --file /home/pi/fonos/init.pa -vvv
 
