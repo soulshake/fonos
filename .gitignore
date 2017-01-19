@@ -3,3 +3,4 @@ env
 PaWebControl
 mopidy-*
 mopidy.conf
+*.pyc
