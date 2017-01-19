@@ -1,0 +1,35 @@
+<html>
+<head>
+<style>
+body {
+  background: black;
+}
+a {
+  display: block;
+  text-align: center;
+  font-size: 4vh;
+  padding: 1em;
+  margin: 1em;
+  color: yellow;
+  background: darkgreen;
+  font-family: sans-serif;
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+
+{% macro servername(service) -%}
+{{ service.server|replace(".local.","") }}
+{%- endmacro %}
+
+{% for service in services.values() if "._pulse-server._tcp." in service.name %}
+  <a class="mpd" href="http://{{ service.ipv4 }}:6680/">{{ servername(service) }} (MPD)</a>
+  <a class="pawd" href="http://{{ service.ipv4 }}:8000/">{{ servername(service) }} (VOL)</a>
+{% endfor %}
+
+{% for service in services.values() if "._http._tcp." in service.name %}
+  <a class="http" href="http://{{ service.ipv4 }}:{{ service.port }}/">{{ servername(service) }}</a>
+{% endfor %}
+
+</body>

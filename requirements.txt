@@ -13,3 +13,6 @@ mopidy-mobile
 mopidy-moped
 mopidy-musicbox-webclient
 mopidy-spotmop
+
+Flask
+zeroconf
