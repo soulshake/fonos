@@ -1,7 +1,8 @@
 # Copy this file so that it's named "hosts" and edit it
 # according to your needs. You should put at least one
 # host (hostname or IP address) in the [fonos] section,
-# and it is recommended to use a Spotify account, too.
+# and be able to log into them with password-less SSH.
+# It is also recommended to add your Spotify credentials.
 
 [fonos]
 raspberrypi.local
