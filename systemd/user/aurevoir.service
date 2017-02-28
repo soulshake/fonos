@@ -6,6 +6,6 @@ WantedBy=default.target
  
 [Service]
 Type=simple
-Environment=FLASK_APP=/home/pi/fonos/aurevoir/aurevoir.py
+Environment=FLASK_APP=/home/pi/fonos/AuRevoir/aurevoir.py
 ExecStart=/home/pi/fonos/env/bin/flask run --host 0.0.0.0 --port 5555
 

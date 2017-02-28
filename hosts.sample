@@ -1,0 +1,13 @@
+# Copy this file so that it's named "hosts" and edit it
+# according to your needs. You should put at least one
+# host (hostname or IP address) in the [fonos] section,
+# and it is recommended to use a Spotify account, too.
+
+[fonos]
+raspberrypi.local
+strawberrypi.local
+
+[fonos:vars]
+spotify_username=sclarke
+spotify_password=sch00lday5
+

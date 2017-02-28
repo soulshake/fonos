@@ -1,0 +1,17 @@
+[core]
+restore_state = true
+
+[audio]
+output = audioresample ! audioconvert ! audio/x-raw,rate=48000,channels=2,format=S16LE ! pulsesink
+
+[http]
+hostname = ::
+zeroconf = Mopidy HTTP server on $hostname
+
+[mpd]
+hostname = ::
+zeroconf = Mopidy MPD server on $hostname
+
+[spotify]
+username = {{spotify_username}}
+password = {{spotify_password}}
