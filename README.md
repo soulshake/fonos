@@ -24,10 +24,21 @@ Device         Boot Start      End  Sectors  Size Id Type
 
 ### Enable SSH
 
-- Create a target directory on your host if it doesn't exist already (we'll use `/media/pi/`): `sudo mkdir -p /media/pi`
-- Mount the SD card's boot device (the `FAT32` one): `sudo mount /dev/mmcblk0p1 /media/pi`
-- Create a file called `ssh` at the root of the boot partition: `sudo touch /media/pi/ssh`
-- Unmount: `sudo umount /media/pi` (but don't physically eject the SD card yet)
+#### Create a target directory on your host if it doesn't exist already (we'll use `/media/pi/`)
+
+`sudo mkdir -p /media/pi`
+
+#### Mount the SD card's boot device (the `FAT32` one)
+
+`sudo mount /dev/mmcblk0p1 /media/pi`
+
+#### Create a file called `ssh` at the root of the boot partition
+
+`sudo touch /media/pi/ssh`
+
+#### Unmount (but don't physically eject the SD card yet)
+
+`sudo umount /media/pi`
 
 ### Change the Pi hostname
 
