@@ -14,6 +14,8 @@ Download [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)
 
 With the SD card inserted into your computer, list the SD card devices by running `sudo fdisk -l`. You should see output like this:
 
+Note: the rest of this tutorial assumes you will set the hostname of your Pi to be `fonos`.
+
 ```
 Device         Boot Start      End  Sectors  Size Id Type
 /dev/mmcblk0p1       8192    92159    83968   41M  c W95 FAT32 (LBA)
@@ -34,7 +36,11 @@ Device         Boot Start      End  Sectors  Size Id Type
 - Change the hostname: `echo "fonos" | sudo tee etc/hostname`
 - Modify the hosts file: `sudo sed -i "s/raspberrypi\$/fonos/" etc/hosts`
 
-Add the following to `etc/network/interfaces`:
+### Network setup
+
+If you intend to connect your Pi to your router directly via ethernet, you can skip this step.
+
+If you want to interact with your Pi over wifi, add the following snippet (with your own SSID and passphrase) to `etc/network/interfaces`:
 
 ```
 iface wlan0 inet dhcp
@@ -42,19 +48,17 @@ iface wlan0 inet dhcp
         wpa-psk "yourWiFipassword"
 ```
 
-
 ## Connecting to the Pi
 
-SSH to the pi by running `ssh pi@fonos.local`. The default password is `raspberry`.
+Plug your Pi in and give it a few minutes to boot.
 
-From the pi, run these commands:
+SSH in as the `pi` user by running `ssh pi@fonos.local`. The default password is `raspberry`.
 
-- `mkdir ~/.ssh`
-- Add your public SSH key to `~/.ssh/authorized_keys`. If you don't know how to do this, see the first few steps at the [GitHub tutorial on SSH keys](https://help.github.com/articles/connecting-to-github-with-ssh/).
+From the Pi, run `mkdir ~/.ssh`, then add your public SSH key to `~/.ssh/authorized_keys`. If you don't know how to do this, see the first few steps at the [GitHub tutorial on SSH keys](https://help.github.com/articles/connecting-to-github-with-ssh/).
 
-Exit by typing `exit`, then ssh to the Pi again to make sure you're not prompted for a password.
+Exit (`exit` or `Ctrl-D`), then ssh to the Pi again to make sure you're not prompted for a password.
 
-Once you're sure you can ssh without a password, disable password login on the Pi:
+Once you've verified you can ssh without a password, disable password login on the Pi:
 
 `echo "PasswordAuthentication No" | sudo tee -a /etc/ssh/ssh_config`
 
