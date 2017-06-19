@@ -106,6 +106,23 @@ Sometimes the PulseAudio daemon needs to be kicked:
 
 By running as a user service, we can be independent from system config files as much as possible.
 
+### I can view the web interfaces but nothing is playing
+
+Ensure your credentials are correct in the output of `mopidy config` as described in [Configuration](#Configuration).
+
+Try downloading an mp3 directly to the Pi:
+
+`wget https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3 /home/pi/fonos`
+
+You should be able to see it under `Files` in the [Moped interface](http://fonos.local:6680/moped), for example. If it plays through your speakers, there might be an issue with your credentials for the service you're trying to play through (e.g. Spotify/Soundcloud/etc).
+
+### The interface shows that it's playing, but I don't hear any sound
+
+- Ensure your Pi is connected to your speaker via audio cable.
+- Ensure your speaker is plugged in and on.
+
+This may sound obvious, but it happens to the best of us :)
+
 ### Debug logging
 
 FIXME
