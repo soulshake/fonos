@@ -1,6 +1,6 @@
 # Fonos
 
-Open source multi-room speaker system for Raspberry Pis
+Fonos is an open source multi-room speaker system for Raspberry Pi inspired by Sonos. Unlike Sonos, it can be used with your own speakers.
 
 ## Dependencies
 
@@ -10,11 +10,11 @@ Open source multi-room speaker system for Raspberry Pis
 
 ## Setup (local)
 
-Download [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/) and burn it to your SD card with Etcher, `dd` or your favorite method.
+Note: the rest of this tutorial assumes you will set the hostname of your Pi to be `fonos`.
+
+Download the [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/) image and burn it to your SD card with Etcher, `dd` or your own favorite method.
 
 With the SD card inserted into your computer, list the SD card devices by running `sudo fdisk -l`. You should see output like this:
-
-Note: the rest of this tutorial assumes you will set the hostname of your Pi to be `fonos`.
 
 ```
 Device         Boot Start      End  Sectors  Size Id Type
@@ -24,23 +24,26 @@ Device         Boot Start      End  Sectors  Size Id Type
 
 ### Enable SSH
 
-- Create the target directory if it doesn't exist already: `sudo mkdir -p /media/pi`
+- Create a target directory on your host if it doesn't exist already (we'll use `/media/pi/`): `sudo mkdir -p /media/pi`
 - Mount the SD card's boot device (the `FAT32` one): `sudo mount /dev/mmcblk0p1 /media/pi`
 - Create a file called `ssh` at the root of the boot partition: `sudo touch /media/pi/ssh`
-- Unmount: `sudo umount /media/pi`
+- Unmount: `sudo umount /media/pi` (but don't physically eject the SD card yet)
 
-### Non-boot device
+### Change the Pi hostname
 
-- Mount the second device: `sudo mount /dev/mmcblk0p2 /media/pi/`
-- Enter the mount directory: `cd /media/pi`
-- Change the hostname: `echo "fonos" | sudo tee etc/hostname`
-- Modify the hosts file: `sudo sed -i "s/raspberrypi\$/fonos/" etc/hosts`
+The default Pi hostname is `raspberrypi`. We'll give ours a custom hostname, `fonos`, so its web interface can later be accessed at `http://fonos.local`.
+
+To do so:
+
+- Mount the second (non-boot) SD card device: `sudo mount /dev/mmcblk0p2 /media/pi/`
+- Change the hostname: `echo "fonos" | sudo tee /media/pi/etc/hostname`
+- Modify the hosts file to replace `raspberrypi` with `fonos`: `sudo sed -i "s/raspberrypi\$/fonos/" /media/pi/etc/hosts`
 
 ### Network setup
 
-If you intend to connect your Pi to your router directly via ethernet, you can skip this step.
+If you intend to connect your Pi directly to your router via ethernet, you can skip this step.
 
-If you want to interact with your Pi over wifi, add the following snippet (with your own SSID and passphrase) to `etc/network/interfaces`:
+Otherwise, if you want to interact with your Pi over wifi, append the following snippet (with your own SSID and passphrase) to `/media/pi/etc/network/interfaces`:
 
 ```
 iface wlan0 inet dhcp
@@ -48,26 +51,27 @@ iface wlan0 inet dhcp
         wpa-psk "yourWiFipassword"
 ```
 
+
 ## Connecting to the Pi
 
-Plug your Pi in and give it a few minutes to boot.
+Plug your Pi into a micro USB power source and give it a few minutes to boot.
 
 SSH in as the `pi` user by running `ssh pi@fonos.local`. The default password is `raspberry`.
 
-From the Pi, run `mkdir ~/.ssh`, then add your public SSH key to `~/.ssh/authorized_keys`. If you don't know how to do this, see the first few steps at the [GitHub tutorial on SSH keys](https://help.github.com/articles/connecting-to-github-with-ssh/).
+From the Pi, run `mkdir ~/.ssh`, add your public SSH key to `~/.ssh/authorized_keys` (you'll need to create this file). If you don't know how to do this, see the first few steps at the [GitHub tutorial on SSH keys](https://help.github.com/articles/connecting-to-github-with-ssh/).
 
-Exit (`exit` or `Ctrl-D`), then ssh to the Pi again to make sure you're not prompted for a password.
+Exit (`exit` or `Ctrl-D`), then SSH to the Pi again to make sure you're not prompted for a password.
 
-Once you've verified you can ssh without a password, disable password login on the Pi:
+Once you've verified you can `ssh pi@fonos.local` without being prompted for a password, you should disable password login on the Pi:
 
 `echo "PasswordAuthentication No" | sudo tee -a /etc/ssh/ssh_config`
 
-For extra security, change the password for the `pi` user with the `passwd` command.
+For extra security, you can also change the password for the `pi` user by running the `passwd` command.
 
 
 ## Deployment (on the Pi)
 
-Run the following commands on the Pi to set things up:
+SSH to the Pi and complete the following steps:
 
 - Install `git` and `pip`: `sudo apt update && sudo apt install git python-pip`
 - Install Ansible: `sudo pip install ansible`
