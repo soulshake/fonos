@@ -72,7 +72,7 @@
       mode: 0755
   - name: create systemd config directory
     file:
-      path: "{{ansible_env.HOME}}/.config/systemd"
+      path: "{{ansible_env.HOME}}/.config/systemd/user"
       state: directory
       mode: 0755
   - name: Mopidy configuration
