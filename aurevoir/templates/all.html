@@ -1,0 +1,24 @@
+<html>
+<head>
+<style>
+</style>
+</head>
+<body>
+We have found {{ services|length }} entries.
+<ul>
+{% for service in services.values() %}
+  <li>{{ service.name }}
+  <ul>
+    <li>Address: {{ service.address|pprint }}</li>
+    <li>Port: {{ service.port }}</li>
+    <li>Server: {{ service.server }}</li>
+    {% if service.properties %}
+    {% for prop_name, prop_value in service.properties.items() %}
+    <li>{{ prop_name }}: {{ prop_value}}</li>
+    {% endfor %}
+    {% endif %}
+  </ul>
+  </li>
+{% endfor %}
+</ul>
+</body>
