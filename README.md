@@ -96,19 +96,17 @@ To view your current config as seen by the Mopidy service:
 
 ## Troubleshooting
 
-Mopidy is running as a systemd user unit. In other words, it is running as a user service (as opposed to a system service).
+Mopidy is running as a systemd user unit. By running as a user service (as opposed to a system service), we can avoid dealing with system config files as much as possible and be self-contained within the `pi` user's home directory.
 
-You can check its status, reload or restart it by running:
+You can check the `mopidy` service status, reload it or restart it by running:
 
 - `systemctl --user status mopidy`
 - `systemctl --user reload mopidy`
 - `systemctl --user restart mopidy`
+- etc.
 
-Sometimes the PulseAudio daemon needs to be kicked: 
+Occasionally the PulseAudio daemon can crash; you can check it by running `systemctl --user status pulseaudio`.
 
-- `systemctl --user status pulseaudio`
-
-By running as a user service, we can be independent from system config files as much as possible.
 
 ### I can view the web interfaces but nothing is playing
 
@@ -120,12 +118,14 @@ Try downloading an mp3 directly to the Pi:
 
 You should be able to see it under `Files` in the [Moped interface](http://fonos.local:6680/moped), for example. If it plays through your speakers, there might be an issue with your credentials for the service you're trying to play through (e.g. Spotify/Soundcloud/etc).
 
+
 ### The interface shows that it's playing, but I don't hear any sound
 
 - Ensure your Pi is connected to your speaker via audio cable.
 - Ensure your speaker is plugged in and on.
 
 This may sound obvious, but it happens to the best of us :)
+
 
 ### Debug logging
 
