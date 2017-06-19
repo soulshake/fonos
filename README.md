@@ -10,7 +10,7 @@ Fonos is an open source multi-room speaker system for Raspberry Pi inspired by S
 
 ## Setup (local)
 
-Note: the rest of this tutorial assumes you will set the hostname of your Pi to be `fonos`.
+Note: the rest of this tutorial assumes you will set the hostname of your Pi to be `fonos`. (If you're setting up more than one Pi, be sure to use a different hostname for each one, like `fonos2`.)
 
 Download the [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/) image and burn it to your SD card with Etcher, `dd` or your own favorite method.
 
@@ -35,13 +35,21 @@ The default Pi hostname is `raspberrypi`. We'll give ours a custom hostname, `fo
 
 To do so:
 
-- Mount the second (non-boot) SD card device: `sudo mount /dev/mmcblk0p2 /media/pi/`
-- Change the hostname: `echo "fonos" | sudo tee /media/pi/etc/hostname`
-- Modify the hosts file to replace `raspberrypi` with `fonos`: `sudo sed -i "s/raspberrypi\$/fonos/" /media/pi/etc/hosts`
+####  Mount the second (non-boot) SD card device
 
-### Network setup
+`sudo mount /dev/mmcblk0p2 /media/pi/`
 
-If you intend to connect your Pi directly to your router via ethernet, you can skip this step.
+#### Change the hostname
+
+`echo "fonos" | sudo tee /media/pi/etc/hostname`
+
+#### Modify the hosts file to replace `raspberrypi` with `fonos`
+
+`sudo sed -i s/raspberrypi/fonos/ /media/pi/etc/hosts`
+
+#### Network setup
+
+_If you intend to connect your Pi directly to your router via ethernet, you can skip this step._
 
 Otherwise, if you want to interact with your Pi over wifi, append the following snippet (with your own SSID and passphrase) to `/media/pi/etc/network/interfaces`:
 
@@ -51,12 +59,21 @@ iface wlan0 inet dhcp
         wpa-psk "yourWiFipassword"
 ```
 
+#### Unmount and eject
+
+`sudo umount /media/pi`
+
+Physically eject the SD card from your computer and insert it into your Pi.
 
 ## Connecting to the Pi
 
 Plug your Pi into a micro USB power source and give it a few minutes to boot.
 
 SSH in as the `pi` user by running `ssh pi@fonos.local`. The default password is `raspberry`.
+
+### SSH key authentication
+
+_If you don't mind typing a password every time you SSH to the Pi, you can skip this step._
 
 From the Pi, run `mkdir ~/.ssh`, add your public SSH key to `~/.ssh/authorized_keys` (you'll need to create this file). If you don't know how to do this, see the first few steps at the [GitHub tutorial on SSH keys](https://help.github.com/articles/connecting-to-github-with-ssh/).
 
@@ -66,21 +83,40 @@ Once you've verified you can `ssh pi@fonos.local` without being prompted for a p
 
 `echo "PasswordAuthentication No" | sudo tee -a /etc/ssh/ssh_config`
 
-For extra security, you can also change the password for the `pi` user by running the `passwd` command.
+### Change the password
 
+For extra security, you should change the password for the `pi` user by running the `passwd` command (especially if you didn't disable password login in the step above).
 
 ## Deployment (on the Pi)
 
 SSH to the Pi and complete the following steps:
 
-- Install `git` and `pip`: `sudo apt update && sudo apt install git python-pip`
-- Install Ansible: `sudo pip install ansible`
-- Clone this repo: `cd ~ && git clone git@github.com:soulshake/fonos.git && cd fonos`
-- Append the contents of `hosts.sample` to `/etc/ansible/hosts`: `cat hosts.sample | sudo tee -a /etc/ansible/hosts`
-- Customize the Ansible hosts file: `sudo vim /etc/ansible/hosts`
-  - add your own `spotify_username` and `spotify_password`
-  - replace the hosts under `[fonos]` with the hostname you chose earlier plus a `.local` extension (in our case, `fonos.local`)
-- Run the playbook: `ansible-playbook playbook.yml`
+#### Install `git` and `pip`
+
+`sudo apt update && sudo apt install git python-pip`
+
+#### Install Ansible
+
+`sudo pip install ansible`
+
+#### Clone this repo
+
+`cd ~ && git clone git@github.com:soulshake/fonos.git && cd fonos`
+
+#### Append the contents of `hosts.sample` to `/etc/ansible/hosts`
+
+`cat hosts.sample | sudo tee -a /etc/ansible/hosts`
+
+#### Customize the Ansible hosts file
+
+`sudo vi /etc/ansible/hosts`
+
+- add your own `spotify_username` and `spotify_password`
+- replace the hosts under `[fonos]` with the hostname you chose earlier plus a `.local` extension (in our case, `fonos.local`)
+
+#### Run the Ansible playbook
+
+`ansible-playbook playbook.yml`
 
 Once the playbook has completed, mopidy should be accessible at [http://fonos.local:6680/mopidy/](http://fonos.local:6680/mopidy/).
 
