@@ -1,6 +1,8 @@
+hosts
 env
 *.log
 PaWebControl
 mopidy-*
 mopidy.conf
 *.pyc
+playbook.retry

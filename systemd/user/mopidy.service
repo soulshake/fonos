@@ -6,5 +6,5 @@ WantedBy=default.target
  
 [Service]
 Type=simple
-ExecStart=/home/pi/fonos/env/bin/mopidy --config /home/pi/fonos/mopidy/mopidy.conf
+ExecStart=/home/pi/fonos/env/bin/mopidy
 

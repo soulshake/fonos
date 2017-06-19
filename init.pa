@@ -1,7 +1,0 @@
-unload-module module-suspend-on-idle
-
-load-module module-native-protocol-tcp auth-anonymous=1
-
-load-module module-zeroconf-publish
-load-module module-zeroconf-discover
-

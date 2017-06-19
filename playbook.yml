@@ -1,0 +1,94 @@
+---
+- hosts: fonos
+  vars:
+  - fonos_path: /home/pi/fonos
+  remote_user: pi
+  tasks:
+  - name: add mopidy repository key
+    become: yes
+    apt_key:
+      url: https://apt.mopidy.com/mopidy.gpg
+  - name: use mopidy sources list (for libspotify)
+    become: yes
+    apt_repository:
+      repo: deb http://apt.mopidy.com/ jessie main contrib non-free
+  - name: install deb packages
+    become: yes
+    apt:
+      name: "{{item}}"
+      state: installed
+      update_cache: yes
+    with_items:
+    - build-essential
+    - python-dev
+    - python-virtualenv
+    - git
+    - pulseaudio
+    - pulseaudio-module-zeroconf
+    - python-gst-1.0
+    - gstreamer1.0-tools
+    - gstreamer1.0-plugins-good
+    - gstreamer1.0-plugins-bad
+    - gstreamer1.0-plugins-ugly
+    - gstreamer1.0-pulseaudio
+    - gir1.2-gstreamer-1.0
+    - gir1.2-gst-plugins-base-1.0
+    - libffi-dev
+    - libspotify-dev
+    - php5-cli
+  - name: copy requirements.txt
+    copy: src=./requirements.txt dest={{fonos_path}}/requirements.txt
+  - name: setup virtualenv
+    pip:
+      requirements: "{{fonos_path}}/requirements.txt"
+      virtualenv: "{{fonos_path}}/env"
+  - name: setup symlink for gstreamer/gobject/python in virtualenv
+    file:
+      state: link
+      src: /usr/lib/python2.7/dist-packages/gi
+      dest: "{{fonos_path}}/env/lib/python2.7/site-packages/gi"
+  - name: checkout PaWebControl
+    git:
+      repo: git://github.com/jpetazzo/PaWebControl
+      dest: "{{fonos_path}}/PaWebControl"
+  - name: checkout AuRevoir
+    git:
+      repo: git://github.com/jpetazzo/AuRevoir
+      dest: "{{fonos_path}}/AuRevoir"
+  - name: Mopidy configuration
+    template:
+      src: ./mopidy.conf.j2
+      dest: "{{ansible_env.HOME}}/.config/mopidy/mopidy.conf"
+  - name: PulseAudio configuration
+    with_items:
+    - client.conf
+    - daemon.conf
+    - init.pa
+    copy:
+      src: ./pulse-{{item}}
+      dest: "{{ansible_env.HOME}}/.config/pulse/{{item}}"
+  - name: automatically start pi systemd units
+    become: yes
+    command: loginctl enable-linger pi
+  - name: copy systemd units
+    with_items:
+    - aurevoir
+    - mopidy
+    - pawebcontrol
+    - pulseaudio
+    copy:
+      src: ./systemd/user/{{item}}.service
+      dest: "{{ansible_env.HOME}}/.config/systemd/user/{{item}}.service"
+  - name: enable systemd units
+    with_items:
+    - aurevoir
+    - mopidy
+    - pawebcontrol
+    - pulseaudio
+    systemd:
+      daemon_reload: yes
+      enabled: yes
+      name: "{{item}}"
+      state: started
+      user: yes
+

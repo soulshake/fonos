@@ -1,0 +1,19 @@
+load-module module-stream-restore
+load-module module-device-restore
+load-module module-card-restore
+load-module module-default-device-restore
+load-module module-rescue-streams
+load-module module-switch-on-port-available
+
+load-module module-udev-detect
+load-module module-always-sink
+
+load-module module-native-protocol-unix
+load-module module-native-protocol-tcp auth-anonymous=1
+
+load-module module-bluetooth-policy
+load-module module-bluetooth-discover
+
+load-module module-zeroconf-publish
+load-module module-zeroconf-discover
+
