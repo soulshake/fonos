@@ -55,6 +55,26 @@
     git:
       repo: git://github.com/jpetazzo/AuRevoir
       dest: "{{fonos_path}}/AuRevoir"
+  - name: create user config directory
+    file:
+      path: "{{ansible_env.HOME}}/.config/"
+      state: directory
+      mode: 0755
+  - name: create mopidy config directory
+    file:
+      path: "{{ansible_env.HOME}}/.config/mopidy"
+      state: directory
+      mode: 0755
+  - name: create pulse config directory
+    file:
+      path: "{{ansible_env.HOME}}/.config/pulse"
+      state: directory
+      mode: 0755
+  - name: create systemd config directory
+    file:
+      path: "{{ansible_env.HOME}}/.config/systemd"
+      state: directory
+      mode: 0755
   - name: Mopidy configuration
     template:
       src: ./mopidy.conf.j2

@@ -4,22 +4,20 @@ Open source multi-room speaker system for Raspberry Pis
 
 ## Dependencies
 
-- a flash card of at least 4GB
-- a Raspberry Pi
-- a way to burn images to SD cards (we recommend [Etcher](https://etcher.io/) recommended)
+- a flash card of at least 4GB or so
+- a Raspberry Pi (we're using a Raspberry Pi 3)
+- a way to burn images to SD cards (we recommend [Etcher](https://etcher.io/))
 - git
 - Ansible
 
 ## Setup
 
 1. Download [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)
-
 2. Burn it to your SD card with Etcher
-
 3. Enable SSH, change the hostname, and enable wifi (optional)
 
 
-Get the devices by running: `sudo fdisk -l`. You should see output like this:
+List the SD card devices by running `sudo fdisk -l`. You should see output like this:
 
 ```
 Device         Boot Start      End  Sectors  Size Id Type
@@ -30,10 +28,8 @@ Device         Boot Start      End  Sectors  Size Id Type
 ### Enable SSH
 
 - Create the target directory if it doesn't exist already: `sudo mkdir -p /media/pi`
-- Mount the boot device (the `FAT32` one): `sudo mount /dev/mmcblk0p1 /media/pi`
-- Enter the mount directory: `cd /media/pi`
-- Create a file called `ssh` at the root of the boot partition: `sudo touch ssh`
-- Leave the directory so you can unmount: `cd ~`
+- Mount the SD card's boot device (the `FAT32` one): `sudo mount /dev/mmcblk0p1 /media/pi`
+- Create a file called `ssh` at the root of the boot partition: `sudo touch /media/pi/ssh`
 - Unmount: `sudo umount /media/pi`
 
 ### Non-boot device
@@ -75,7 +71,7 @@ Run the following commands to set things up:
 - `sudo apt update`
 - `sudo apt install git python-pip`
 - `sudo pip install ansible`
-- clone the repo: `git clone git@github.com:soulshake/fonos.git && cd fonos`
+- clone the repo: `cd ~ && git clone git@github.com:soulshake/fonos.git && cd fonos`
 - append hosts.sample to `/etc/ansible/hosts`: `cat hosts.sample | sudo tee -a /etc/ansible/hosts`
 - customize hosts : `sudo vim /etc/ansible/hosts`
   - add your own `spotify_username` and `spotify_password`
