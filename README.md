@@ -70,17 +70,42 @@ Run the following commands to set things up:
 
 - `sudo apt update`
 - `sudo apt install git python-pip`
-- `sudo pip install ansible`
-- clone the repo: `cd ~ && git clone git@github.com:soulshake/fonos.git && cd fonos`
-- append hosts.sample to `/etc/ansible/hosts`: `cat hosts.sample | sudo tee -a /etc/ansible/hosts`
-- customize hosts : `sudo vim /etc/ansible/hosts`
+- Install Ansible: `sudo pip install ansible`
+- Clone the repo: `cd ~ && git clone git@github.com:soulshake/fonos.git && cd fonos`
+- Append the contents of `hosts.sample` to `/etc/ansible/hosts`: `cat hosts.sample | sudo tee -a /etc/ansible/hosts`
+- Customize the Ansible hosts file: `sudo vim /etc/ansible/hosts`
   - add your own `spotify_username` and `spotify_password`
   - replace the hosts under `[fonos]` with the hostname you chose earlier plus a `.local` extension (in our case, `fonos.local`)
 - Run the playbook: `ansible-playbook playbook.yml`
 
-## Principles
+Once the playbook has completed, mopidy should be accessible at [http://fonos.local:6680/mopidy/](http://fonos.local:6680/mopidy/) (or [http://fonos:6680/mopidy/](http://fonos:6680/mopidy/) from a Mac).
 
-- systemd user units
-- user configuration files (in ~/.config)
-- try to be independent from system config files as much as possible
+## Configuration
 
+Config files are located in `/home/pi/.config/`. 
+
+To view your current config as seen by the Mopidy service:
+
+- `source /home/pi/fonos/env/bin/activate`
+- `mopidy config`
+
+
+## Troubleshooting
+
+Mopidy is running as a systemd user unit. In other words, it is running as a user service (as opposed to a system service).
+
+You can check its status, reload or restart it by running:
+
+- `systemctl --user status mopidy`
+- `systemctl --user reload mopidy`
+- `systemctl --user restart mopidy`
+
+Sometimes the PulseAudio daemon needs to be kicked: 
+
+- `systemctl --user status pulseaudio`
+
+By running as a user service, we can be independent from system config files as much as possible.
+
+### Debug logging
+
+FIXME
