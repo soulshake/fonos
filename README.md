@@ -7,8 +7,6 @@ Open source multi-room speaker system for Raspberry Pis
 - a flash card of at least 4GB or so
 - a Raspberry Pi (we're using a Raspberry Pi 3)
 - a way to burn images to SD cards (we recommend [Etcher](https://etcher.io/))
-- git
-- Ansible
 
 ## Setup
 
