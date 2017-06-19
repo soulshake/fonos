@@ -1,6 +1,6 @@
 # Fonos
 
-Fonos is an open source multi-room speaker system for Raspberry Pi inspired by Sonos. Unlike Sonos, it can be used with your own speakers.
+Fonos is an open source multi-room speaker system for Raspberry Pi.
 
 ## Dependencies
 
@@ -10,11 +10,11 @@ Fonos is an open source multi-room speaker system for Raspberry Pi inspired by S
 
 ## Setup (local)
 
-Note: the rest of this tutorial assumes you will set the hostname of your Pi to be `fonos`. (If you're setting up more than one Pi, be sure to use a different hostname for each one, like `fonos2`.)
+Note: the rest of this tutorial assumes you will set the hostname of your Pi to be `fonos`. (If you're setting up more than one Pi, be sure to use a different hostname for each one.)
 
 Download the [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/) image and burn it to your SD card with Etcher, `dd` or your own favorite method.
 
-With the SD card inserted into your computer, list the SD card devices by running `sudo fdisk -l`. You should see output like this:
+With the SD card inserted into your computer, list the SD card devices by running `sudo fdisk -l`. On Linux, the output will look something like this:
 
 ```
 Device         Boot Start      End  Sectors  Size Id Type
@@ -28,11 +28,11 @@ Device         Boot Start      End  Sectors  Size Id Type
 
 `sudo mkdir -p /media/pi`
 
-#### Mount the SD card's boot device (the `FAT32` one)
+#### Mount the SD card's boot device (the `FAT32` one; replace `/dev/****` with the one on your system)
 
 `sudo mount /dev/mmcblk0p1 /media/pi`
 
-#### Create a file called `ssh` at the root of the boot partition
+#### Create an empty file called `ssh` at the root of the boot partition to enable SSH on the Pi
 
 `sudo touch /media/pi/ssh`
 
@@ -42,13 +42,13 @@ Device         Boot Start      End  Sectors  Size Id Type
 
 ### Change the Pi hostname
 
-The default Pi hostname is `raspberrypi`. We'll give ours a custom hostname, `fonos`, so its web interface can later be accessed at `http://fonos.local`.
-
-To do so:
+The default Pi hostname is `raspberrypi`. We'll give ours a custom hostname, `fonos`, so its web interface can later be accessed at `http://fonos.local`. To do so:
 
 ####  Mount the second (non-boot) SD card device
 
 `sudo mount /dev/mmcblk0p2 /media/pi/`
+
+Replace `/dev/mmcblk0p2` with the one on your system.
 
 #### Change the hostname
 
@@ -62,7 +62,7 @@ To do so:
 
 _If you intend to connect your Pi directly to your router via ethernet, you can skip this step._
 
-Otherwise, if you want to interact with your Pi over wifi, append the following snippet (with your own SSID and passphrase) to `/media/pi/etc/network/interfaces`:
+If you want to interact with your Pi over wifi, append the following snippet (with your own SSID and passphrase) to `/media/pi/etc/network/interfaces`:
 
 ```
 iface wlan0 inet dhcp
@@ -88,7 +88,7 @@ _If you don't mind typing a password every time you SSH to the Pi, you can skip 
 
 From the Pi, run `mkdir ~/.ssh`, add your public SSH key to `~/.ssh/authorized_keys` (you'll need to create this file). If you don't know how to do this, see the first few steps at the [GitHub tutorial on SSH keys](https://help.github.com/articles/connecting-to-github-with-ssh/).
 
-Exit (`exit` or `Ctrl-D`), then SSH to the Pi again to make sure you're not prompted for a password.
+Exit, then SSH to the Pi again to make sure you're not prompted for a password.
 
 Once you've verified you can `ssh pi@fonos.local` without being prompted for a password, you should disable password login on the Pi:
 
@@ -96,7 +96,7 @@ Once you've verified you can `ssh pi@fonos.local` without being prompted for a p
 
 ### Change the password
 
-For extra security, you should change the password for the `pi` user by running the `passwd` command (especially if you didn't disable password login in the step above).
+You should change the password for the `pi` user by running the `passwd` command (especially if you didn't disable password login in the step above).
 
 ## Deployment (on the Pi)
 
@@ -114,20 +114,14 @@ SSH to the Pi and complete the following steps:
 
 `cd ~ && git clone git@github.com:soulshake/fonos.git && cd fonos`
 
-#### Append the contents of `hosts.sample` to `/etc/ansible/hosts`
+#### Copy `hosts.sample` to `hosts` and modify it
 
-`cat hosts.sample | sudo tee -a /etc/ansible/hosts`
-
-#### Customize the Ansible hosts file
-
-`sudo vi /etc/ansible/hosts`
-
-- add your own `spotify_username` and `spotify_password`
+- add your own `spotify_username` and `spotify_password`, and credentials for other services you wish to enable
 - replace the hosts under `[fonos]` with the hostname you chose earlier plus a `.local` extension (in our case, `fonos.local`)
 
 #### Run the Ansible playbook
 
-`ansible-playbook playbook.yml`
+`ansible-playbook playbook.yml -i hosts`
 
 Once the playbook has completed, mopidy should be accessible at [http://fonos.local:6680/mopidy/](http://fonos.local:6680/mopidy/).
 
@@ -155,7 +149,7 @@ You can check the `mopidy` service status, reload it or restart it by running:
 Occasionally the PulseAudio daemon can crash; you can check it by running `systemctl --user status pulseaudio`.
 
 
-### I can view the web interfaces but nothing is playing
+### "I can view the web interfaces but nothing is playing"
 
 Ensure your credentials are correct in the output of `mopidy config` as described in [Configuration](#Configuration).
 
@@ -166,7 +160,7 @@ Try downloading an mp3 directly to the Pi:
 You should be able to see it under `Files` in the [Moped interface](http://fonos.local:6680/moped), for example. If it plays through your speakers, there might be an issue with your credentials for the service you're trying to play through (e.g. Spotify/Soundcloud/etc).
 
 
-### The interface shows that it's playing, but I don't hear any sound
+### "The interface shows that it's playing, but I don't hear any sound"
 
 - Ensure your Pi is connected to your speaker via audio cable.
 - Ensure your speaker is plugged in and on.
