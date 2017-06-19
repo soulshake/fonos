@@ -8,14 +8,11 @@ Open source multi-room speaker system for Raspberry Pis
 - a Raspberry Pi (we're using a Raspberry Pi 3)
 - a way to burn images to SD cards (we recommend [Etcher](https://etcher.io/))
 
-## Setup
+## Setup (local)
 
-1. Download [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)
-2. Burn it to your SD card with Etcher
-3. Enable SSH, change the hostname, and enable wifi (optional)
+Download [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/) and burn it to your SD card with Etcher, `dd` or your favorite method.
 
-
-List the SD card devices by running `sudo fdisk -l`. You should see output like this:
+With the SD card inserted into your computer, list the SD card devices by running `sudo fdisk -l`. You should see output like this:
 
 ```
 Device         Boot Start      End  Sectors  Size Id Type
@@ -46,30 +43,31 @@ iface wlan0 inet dhcp
 ```
 
 
-## Deploying it
+## Connecting to the Pi
 
-SSH to the pi: `ssh pi@fonos.local`
-The default password is `raspberry`.
+SSH to the pi by running `ssh pi@fonos.local`. The default password is `raspberry`.
 
 From the pi, run these commands:
 
 - `mkdir ~/.ssh`
-- Add your public key to `~/.ssh/authorized_keys`
+- Add your public SSH key to `~/.ssh/authorized_keys`. If you don't know how to do this, see the first few steps at the [GitHub tutorial on SSH keys](https://help.github.com/articles/connecting-to-github-with-ssh/).
 
-Exit, then ssh again to make sure you're not prompted for a password.
+Exit by typing `exit`, then ssh to the Pi again to make sure you're not prompted for a password.
 
-Once you're sure you can ssh without a password, disable password login:
+Once you're sure you can ssh without a password, disable password login on the Pi:
 
 `echo "PasswordAuthentication No" | sudo tee -a /etc/ssh/ssh_config`
 
-And change the default password: `passwd`
+For extra security, change the password for the `pi` user with the `passwd` command.
 
-Run the following commands to set things up:
 
-- `sudo apt update`
-- `sudo apt install git python-pip`
+## Deployment (on the Pi)
+
+Run the following commands on the Pi to set things up:
+
+- Install `git` and `pip`: `sudo apt update && sudo apt install git python-pip`
 - Install Ansible: `sudo pip install ansible`
-- Clone the repo: `cd ~ && git clone git@github.com:soulshake/fonos.git && cd fonos`
+- Clone this repo: `cd ~ && git clone git@github.com:soulshake/fonos.git && cd fonos`
 - Append the contents of `hosts.sample` to `/etc/ansible/hosts`: `cat hosts.sample | sudo tee -a /etc/ansible/hosts`
 - Customize the Ansible hosts file: `sudo vim /etc/ansible/hosts`
   - add your own `spotify_username` and `spotify_password`
