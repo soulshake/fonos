@@ -50,7 +50,7 @@ iface wlan0 inet dhcp
 
 ## Deploying it
 
-SSH to the pi: `ssh pi@fonos.local` (or just `pi@fonos` from a Mac)
+SSH to the pi: `ssh pi@fonos.local`
 The default password is `raspberry`.
 
 From the pi, run these commands:
@@ -78,7 +78,7 @@ Run the following commands to set things up:
   - replace the hosts under `[fonos]` with the hostname you chose earlier plus a `.local` extension (in our case, `fonos.local`)
 - Run the playbook: `ansible-playbook playbook.yml`
 
-Once the playbook has completed, mopidy should be accessible at [http://fonos.local:6680/mopidy/](http://fonos.local:6680/mopidy/) (or [http://fonos:6680/mopidy/](http://fonos:6680/mopidy/) from a Mac).
+Once the playbook has completed, mopidy should be accessible at [http://fonos.local:6680/mopidy/](http://fonos.local:6680/mopidy/).
 
 ## Configuration
 
