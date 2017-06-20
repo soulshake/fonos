@@ -212,3 +212,58 @@ This may sound obvious, but it happens to the best of us :)
 ### Debug logging
 
 FIXME
+
+
+## Combining sinks
+
+Download something to play:
+
+`wget https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3 /home/pi/fonos`
+
+Then navigate to `http://fonos.local:6680/moped` in a browser and play the track from the "Files" section.
+
+Then, on the Pi, list sinks by name:
+
+```
+pacmd list-sinks | grep -i name:
+	name: <alsa_output.0.analog-stereo>
+	name: <tunnel.vorpal.local.alsa_output.pci-0000_00_03.0.hdmi-stereo>
+	name: <tunnel.vorpal.local.alsa_output.pci-0000_00_1b.0.analog-stereo>
+	name: <tunnel.vorpal.local.combined>
+	name: <tunnel.fonos2.local.alsa_output.0.analog-stereo>
+	name: <tunnel.fonos2.local.alsa_output.0.analog-stereo.2>
+```
+
+Create a combined output between our Pi's output (`alsa_output.0.analog-stereo`) and the corresponding output on the other pi (`tunnel.fonos2.local.alsa_output.0.analog-stereo`). (There's duplicates (with a `.2` suffix) because of ipv6.)
+
+Create a new combined sink:
+
+```
+pacmd load-module module-combine-sink \
+  sink_name=combined \
+  slaves="alsa_output.0.analog-stereo,tunnel.fonos2.local.alsa_output.0.analog-stereo"
+```
+
+Now if you run `pacmd list-sinks | grep -i name:` again, you'll see the new sink:
+
+```
+	name: <combined>
+```
+
+A snippet:
+
+```
+pacmd load-module module-combine-sink slaves=$(pacmd list-sinks | sed -n 's/^\s*name: <\(.*\)>$/\1/p' | grep -e alsa_output.usb | tr "\n" ",")
+```
+
+### Troubleshooting
+
+If you can view the web interface but nothing seems to actually play, you may need to check on the Mopidy service.
+
+To view Mopidy service logs:
+
+`sudo journalctl _SYSTEMD_USER_UNIT=mopidy.service`
+
+To restart Mopidy:
+
+`systemctl --user restart mopidy.service`
