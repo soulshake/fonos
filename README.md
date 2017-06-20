@@ -16,7 +16,7 @@ Download the [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbi
 
 With Etcher CLI, for example:
 
-`sudo etcher `**`~/Downloads/2017-04-10-raspbian-jessie-lite.img`**` --drive `**`/dev/mmcblk0`**
+<pre>sudo etcher <b>~/Downloads/2017-04-10-raspbian-jessie-lite.img</b> --drive <b>/dev/mmcblk0</b></pre>
 
 ### Get the SD card devices
 
@@ -54,7 +54,7 @@ We'll use `/media/pi`:
 
 ##### Mount the SD card's boot device:
 
-`sudo mount `**`/dev/mmcblk0p1`**` /media/pi`
+<pre>sudo mount <b>/dev/mmcblk0p1</b> /media/pi</pre>
 
 ##### Create an empty file called `ssh` at the root of the boot partition to enable SSH on the Pi:
 
@@ -71,11 +71,11 @@ The default Pi hostname is `raspberrypi`. We'll give ours a custom hostname, `fo
 
 #####  Mount the second (non-boot) SD card device:
 
-`sudo mount `**`/dev/mmcblk0p2`**` /media/pi/`
+<pre>sudo mount <b>/dev/mmcblk0p2</b> /media/pi/</pre>
 
 ##### Change the hostname:
 
-`echo `**`"fonos"`**` | sudo tee /media/pi/etc/hostname`
+<pre>echo "<b>fonos</b>" | sudo tee /media/pi/etc/hostname</pre>
 
 ##### Modify the hosts file to replace `raspberrypi` with your chosen hostname:
 
