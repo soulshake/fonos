@@ -14,13 +14,33 @@ Note: the rest of this tutorial assumes you will set the hostname of your Pi to 
 
 Download the [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/) image and burn it to your SD card with Etcher, `dd` or your own favorite method.
 
+With Etcher CLI, for example:
+
+`sudo etcher ../2017-04-10-raspbian-jessie-lite.img --drive /dev/mmcblk0`
+
+### Get the SD card devices
+
+#### On Linux
+
 With the SD card inserted into your computer, list the SD card devices by running `sudo fdisk -l`. On Linux, the output will look something like this:
 
 ```
+Disk /dev/mmcblk0: 14.9 GiB, 15931539456 bytes, 31116288 sectors
+[...]
+
 Device         Boot Start      End  Sectors  Size Id Type
 /dev/mmcblk0p1       8192    92159    83968   41M  c W95 FAT32 (LBA)
 /dev/mmcblk0p2      92160 31116287 31024128 14.8G 83 Linux
 ```
+
+In the output above:
+- `/dev/mmcblk0` is the disk
+- `/dev/mmcblk0p1` is the boot device
+- `/dev/mmcblk0p2` is the non-boot device
+
+#### On other platforms
+
+FIXME
 
 ### Enable SSH
 
@@ -82,6 +102,8 @@ Plug your Pi into a micro USB power source and give it a few minutes to boot.
 
 SSH in as the `pi` user by running `ssh pi@fonos.local`. The default password is `raspberry`.
 
+If you still can't connect via SSH after a few minutes, try connecting to your router's web interface to see if the device appears there. If it doesn't, it usually helps to unplug the Pi and plug it back in.
+
 ### SSH key authentication
 
 _If you don't mind typing a password every time you SSH to the Pi, you can skip this step._
@@ -104,7 +126,14 @@ SSH to the Pi and complete the following steps:
 
 #### Install `git` and `pip`
 
-`sudo apt update && sudo apt install git python-pip`
+```
+sudo apt update && sudo apt install -y \
+    git \
+    libffi-dev \
+    libssl-dev \
+    python-dev \
+    python-pip
+```
 
 #### Install Ansible
 
