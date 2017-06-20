@@ -16,7 +16,7 @@ Download the [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbi
 
 With Etcher CLI, for example:
 
-`sudo etcher ../2017-04-10-raspbian-jessie-lite.img --drive /dev/mmcblk0`
+`sudo etcher ../2017-04-10-raspbian-jessie-lite.img --drive` **`/dev/mmcblk0`**
 
 ### Get the SD card devices
 
@@ -48,9 +48,9 @@ FIXME
 
 `sudo mkdir -p /media/pi`
 
-#### Mount the SD card's boot device (the `FAT32` one; replace `/dev/****` with the one on your system)
+#### Mount the SD card's boot device
 
-`sudo mount /dev/mmcblk0p1 /media/pi`
+`sudo mount `**`/dev/mmcblk0p1`**` /media/pi`  # Replace **`/dev/mmcblk0p1`** with the one on your system
 
 #### Create an empty file called `ssh` at the root of the boot partition to enable SSH on the Pi
 
@@ -66,17 +66,15 @@ The default Pi hostname is `raspberrypi`. We'll give ours a custom hostname, `fo
 
 ####  Mount the second (non-boot) SD card device
 
-`sudo mount /dev/mmcblk0p2 /media/pi/`
-
-Replace `/dev/mmcblk0p2` with the one on your system.
+`sudo mount `**`/dev/mmcblk0p2`**` /media/pi/`  # Replace **`/dev/mmcblk0p2`** with the one on your system
 
 #### Change the hostname
 
-`echo "fonos" | sudo tee /media/pi/etc/hostname`
+`echo `**`"fonos"`**` | sudo tee /media/pi/etc/hostname`  # Change `fonos` if you're using a difference hostname
 
 #### Modify the hosts file to replace `raspberrypi` with `fonos`
 
-`sudo sed -i s/raspberrypi/fonos/ /media/pi/etc/hosts`
+`sudo sed -i s/raspberrypi/fonos/ /media/pi/etc/hosts`  # Change `fonos` if you're using a different hostname
 
 #### Network setup
 
@@ -120,33 +118,36 @@ Once you've verified you can `ssh pi@fonos.local` without being prompted for a p
 
 You should change the password for the `pi` user by running the `passwd` command (especially if you didn't disable password login in the step above).
 
-## Deployment (on the Pi)
+## Deployment (on the host)
 
-SSH to the Pi and complete the following steps:
+From your local machine, complete the following steps:
 
-#### Install `git` and `pip`
+#### Install Ansible (version 2.0 or above)
 
-```
-sudo apt update && sudo apt install -y \
-    git \
-    libffi-dev \
-    libssl-dev \
-    python-dev \
-    python-pip
-```
-
-#### Install Ansible
-
-`sudo pip install ansible`
+See instructions for installing Ansible [here](http://docs.ansible.com/ansible/intro_installation.html).
 
 #### Clone this repo
 
-`cd ~ && git clone git@github.com:soulshake/fonos.git && cd fonos`
+`git clone git@github.com:soulshake/fonos.git && cd fonos`
 
-#### Copy `hosts.sample` to `hosts` and modify it
+#### Create your Ansible inventory file (`hosts`)
 
+- From the root of the repo you just cloned, copy `hosts.sample` to `hosts` and modify it
 - add your own `spotify_username` and `spotify_password`, and credentials for other services you wish to enable
 - replace the hosts under `[fonos]` with the hostname you chose earlier plus a `.local` extension (in our case, `fonos.local`)
+
+The resulting `hosts` file should look something like this (if you have Pis with the hostnames `fonos` and `fonos2`):
+
+```
+[fonos]
+fonos2.local
+
+[fonos:vars]
+spotify_username=your.spotify.username
+spotify_password=yourSpotifyPa$$word
+```
+
+If you want to provision more Pis later, just add their hostnames under `[fonos]`.
 
 #### Run the Ansible playbook
 
@@ -156,9 +157,11 @@ Once the playbook has completed, mopidy should be accessible at [http://fonos.lo
 
 ## Configuration
 
-Config files are located in `/home/pi/.config/`. 
+Config files are located on the Pi in `/home/pi/.config/`.
 
-To view your current config as seen by the Mopidy service:
+### To view your current config as seen by the Mopidy service
+
+From the Pi, run:
 
 - `source /home/pi/fonos/env/bin/activate`
 - `mopidy config`

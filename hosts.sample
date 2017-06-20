@@ -5,10 +5,9 @@
 # It is also recommended to add your Spotify credentials.
 
 [fonos]
-raspberrypi.local
-strawberrypi.local
+fonos.local ansible_user=pi
+fonos2.local ansible_user=pi
 
 [fonos:vars]
 spotify_username=sclarke
 spotify_password=sch00lday5
-
