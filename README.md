@@ -250,19 +250,34 @@ Now if you run `pacmd list-sinks | grep -i name:` again, you'll see the new sink
 	name: <combined>
 ```
 
-A snippet:
+A snippet to combine all USB sinks:
 
 ```
-pacmd load-module module-combine-sink slaves=$(pacmd list-sinks | sed -n 's/^\s*name: <\(.*\)>$/\1/p' | grep -e alsa_output.usb | tr "\n" ",")
+pacmd load-module module-combine-sink \
+  sink_name=combined \
+  slaves=$(pacmd list-sinks 
+    | sed -n 's/^\s*name: <\(.*\)>$/\1/p' \
+    | grep -e alsa_output.usb \
+    | tr "\n" ",")
 ```
+
+Open pavucontrol from your host with the `PULSE_SERVER` environment variable set to your Pi hostname:
+
+`PULSE_SERVER=fonos.local pavucontrol`
+
+In the **Playback** tab, you should be able to select the combined output.
+
+All your speakers should now, in theory, be producing sound.
+
 
 ### Troubleshooting
 
-If you can view the web interface but nothing seems to actually play, you may need to check on the Mopidy service.
+If you can view the web interface but nothing seems to actually play, you may need to check on the Mopidy or PulseAudio services.
 
-To view Mopidy service logs:
+To view service logs:
 
-`sudo journalctl _SYSTEMD_USER_UNIT=mopidy.service`
+- `sudo journalctl _SYSTEMD_USER_UNIT=mopidy.service`
+- `sudo journalctl  _SYSTEMD_USER_UNIT=pulseaudio.service`
 
 To restart Mopidy:
 
