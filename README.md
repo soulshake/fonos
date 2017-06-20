@@ -24,21 +24,21 @@ With Etcher CLI, for example:
 
 With the SD card inserted into your computer, list the SD card devices by running `sudo fdisk -l`. On Linux, the output will look something like this:
 
-```
+<pre>
 $ sudo fdisk -l
 
-Disk /dev/mmcblk0: 14.9 GiB, 15931539456 bytes, 31116288 sectors
+Disk <b>/dev/mmcblk0</b>: 14.9 GiB, 15931539456 bytes, 31116288 sectors
 [...]
 
 Device         Boot Start      End  Sectors  Size Id Type
-/dev/mmcblk0p1       8192    92159    83968   41M  c W95 FAT32 (LBA)
-/dev/mmcblk0p2      92160 31116287 31024128 14.8G 83 Linux
-```
+<b>/dev/mmcblk0p1</b>       8192    92159    83968   41M  c W95 FAT32 (LBA)
+<b>/dev/mmcblk0p2</b>      92160 31116287 31024128 14.8G 83 Linux
+</pre>
 
 In the output above:
-- `/dev/mmcblk0` is the disk
-- `/dev/mmcblk0p1` is the boot device
-- `/dev/mmcblk0p2` is the non-boot device
+- **`/dev/mmcblk0`** is the disk
+- **`/dev/mmcblk0p1`** is the boot device
+- **`/dev/mmcblk0p2`** is the non-boot device
 
 #### On other platforms
 
@@ -79,7 +79,7 @@ The default Pi hostname is `raspberrypi`. We'll give ours a custom hostname, `fo
 
 ##### Modify the hosts file to replace `raspberrypi` with your chosen hostname:
 
-`sudo sed -i s/raspberrypi/fonos/ /media/pi/etc/hosts`
+<pre>sudo sed -i s/raspberrypi/<b>fonos</b>/ /media/pi/etc/hosts</pre>
 
 ##### Network setup:
 
@@ -87,11 +87,12 @@ _If you intend to connect your Pi directly to your router via ethernet, you can 
 
 If you want to interact with your Pi over wifi, append the following snippet (with your own SSID and passphrase) to `/media/pi/etc/network/interfaces`:
 
-```
+
+<pre>
 iface wlan0 inet dhcp
-        wpa-ssid "yourCleverWiFiSSID"
-        wpa-psk "yourWiFipassword"
-```
+        wpa-ssid "<b>yourCleverWiFiSSID</b>"
+        wpa-psk "<b>yourWiFipassword</b>"
+</pre>
 
 ##### Unmount and eject:
 
@@ -103,7 +104,7 @@ Physically eject the SD card from your computer and insert it into your Pi.
 
 Plug your Pi into a micro USB power source and give it a few minutes to boot.
 
-SSH in as the `pi` user by running `ssh pi@fonos.local`. The default password is `raspberry`.
+SSH in as the `pi` user by running <pre>ssh pi@<b>fonos</b>.local</pre>. The default password is `raspberry`.
 
 Note: If you still can't connect via SSH after a few minutes, try connecting to your router's web interface to see if the device appears there. If it doesn't, it usually helps to unplug the Pi and plug it back in.
 
@@ -141,14 +142,15 @@ From the root of the repo you just cloned, copy `hosts.sample` to `hosts` and mo
 
 The resulting `hosts` file should look something like this (if you have Pis with the hostnames `fonos` and `fonos2`):
 
-```
+<pre>
 [fonos]
-fonos2.local
+<b>fonos.local</b>
+<b>fonos2.local</b>
 
 [fonos:vars]
-spotify_username=your.spotify.username
-spotify_password=yourSpotifyPa$$word
-```
+spotify_username=<b>your.spotify.username</b>
+spotify_password=<b>yourSpotifyPa$$word</b>
+</pre>
 
 If you want to provision more Pis later, just add their hostnames under `[fonos]`.
 
