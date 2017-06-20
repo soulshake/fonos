@@ -16,7 +16,7 @@ Download the [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbi
 
 With Etcher CLI, for example:
 
-`sudo etcher ../2017-04-10-raspbian-jessie-lite.img --drive` **`/dev/mmcblk0`**
+`sudo etcher `**`~/Downloads/2017-04-10-raspbian-jessie-lite.img`**` --drive `**`/dev/mmcblk0`**
 
 ### Get the SD card devices
 
@@ -25,6 +25,8 @@ With Etcher CLI, for example:
 With the SD card inserted into your computer, list the SD card devices by running `sudo fdisk -l`. On Linux, the output will look something like this:
 
 ```
+$ sudo fdisk -l
+
 Disk /dev/mmcblk0: 14.9 GiB, 15931539456 bytes, 31116288 sectors
 [...]
 
@@ -44,39 +46,42 @@ FIXME
 
 ### Enable SSH
 
-#### Create a target directory on your host if it doesn't exist already (we'll use `/media/pi/`)
+##### Create a target directory on your host if it doesn't exist already:
+
+We'll use `/media/pi`:
 
 `sudo mkdir -p /media/pi`
 
-#### Mount the SD card's boot device
+##### Mount the SD card's boot device:
 
-`sudo mount `**`/dev/mmcblk0p1`**` /media/pi`  # Replace **`/dev/mmcblk0p1`** with the one on your system
+`sudo mount `**`/dev/mmcblk0p1`**` /media/pi`
 
-#### Create an empty file called `ssh` at the root of the boot partition to enable SSH on the Pi
+##### Create an empty file called `ssh` at the root of the boot partition to enable SSH on the Pi:
 
 `sudo touch /media/pi/ssh`
 
-#### Unmount (but don't physically eject the SD card yet)
+##### Unmount (but don't physically eject the SD card yet):
 
 `sudo umount /media/pi`
 
-### Change the Pi hostname
+
+### Configure the Pi
 
 The default Pi hostname is `raspberrypi`. We'll give ours a custom hostname, `fonos`, so its web interface can later be accessed at `http://fonos.local`. To do so:
 
-####  Mount the second (non-boot) SD card device
+#####  Mount the second (non-boot) SD card device:
 
-`sudo mount `**`/dev/mmcblk0p2`**` /media/pi/`  # Replace **`/dev/mmcblk0p2`** with the one on your system
+`sudo mount `**`/dev/mmcblk0p2`**` /media/pi/`
 
-#### Change the hostname
+##### Change the hostname:
 
-`echo `**`"fonos"`**` | sudo tee /media/pi/etc/hostname`  # Change `fonos` if you're using a difference hostname
+`echo `**`"fonos"`**` | sudo tee /media/pi/etc/hostname`
 
-#### Modify the hosts file to replace `raspberrypi` with `fonos`
+##### Modify the hosts file to replace `raspberrypi` with your chosen hostname:
 
-`sudo sed -i s/raspberrypi/fonos/ /media/pi/etc/hosts`  # Change `fonos` if you're using a different hostname
+`sudo sed -i s/raspberrypi/fonos/ /media/pi/etc/hosts`
 
-#### Network setup
+##### Network setup:
 
 _If you intend to connect your Pi directly to your router via ethernet, you can skip this step._
 
@@ -88,7 +93,7 @@ iface wlan0 inet dhcp
         wpa-psk "yourWiFipassword"
 ```
 
-#### Unmount and eject
+##### Unmount and eject:
 
 `sudo umount /media/pi`
 
@@ -100,13 +105,13 @@ Plug your Pi into a micro USB power source and give it a few minutes to boot.
 
 SSH in as the `pi` user by running `ssh pi@fonos.local`. The default password is `raspberry`.
 
-If you still can't connect via SSH after a few minutes, try connecting to your router's web interface to see if the device appears there. If it doesn't, it usually helps to unplug the Pi and plug it back in.
+Note: If you still can't connect via SSH after a few minutes, try connecting to your router's web interface to see if the device appears there. If it doesn't, it usually helps to unplug the Pi and plug it back in.
 
 ### SSH key authentication
 
 _If you don't mind typing a password every time you SSH to the Pi, you can skip this step._
 
-From the Pi, run `mkdir ~/.ssh`, add your public SSH key to `~/.ssh/authorized_keys` (you'll need to create this file). If you don't know how to do this, see the first few steps at the [GitHub tutorial on SSH keys](https://help.github.com/articles/connecting-to-github-with-ssh/).
+From the Pi, create the `~/.ssh/authorized_keys` file and add your public SSH key. If you don't know how to do this, see the first few steps at the [GitHub tutorial on SSH keys](https://help.github.com/articles/connecting-to-github-with-ssh/).
 
 Exit, then SSH to the Pi again to make sure you're not prompted for a password.
 
@@ -114,13 +119,10 @@ Once you've verified you can `ssh pi@fonos.local` without being prompted for a p
 
 `echo "PasswordAuthentication No" | sudo tee -a /etc/ssh/ssh_config`
 
-### Change the password
 
-You should change the password for the `pi` user by running the `passwd` command (especially if you didn't disable password login in the step above).
+## Deployment
 
-## Deployment (on the host)
-
-From your local machine, complete the following steps:
+From your **local machine**, complete the following steps:
 
 #### Install Ansible (version 2.0 or above)
 
@@ -132,7 +134,8 @@ See instructions for installing Ansible [here](http://docs.ansible.com/ansible/i
 
 #### Create your Ansible inventory file (`hosts`)
 
-- From the root of the repo you just cloned, copy `hosts.sample` to `hosts` and modify it
+From the root of the repo you just cloned, copy `hosts.sample` to `hosts` and modify it:
+
 - add your own `spotify_username` and `spotify_password`, and credentials for other services you wish to enable
 - replace the hosts under `[fonos]` with the hostname you chose earlier plus a `.local` extension (in our case, `fonos.local`)
 
@@ -154,6 +157,10 @@ If you want to provision more Pis later, just add their hostnames under `[fonos]
 `ansible-playbook playbook.yml -i hosts`
 
 Once the playbook has completed, mopidy should be accessible at [http://fonos.local:6680/mopidy/](http://fonos.local:6680/mopidy/).
+
+Note: For some reason, the playbook sometimes fails the first time at the "enable systemd units" step. If this happens, retry by running:
+
+`ansible-playbook playbook.yml -i hosts --start-at-task="enable systemd units"`
 
 ## Configuration
 
