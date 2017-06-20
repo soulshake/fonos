@@ -24,6 +24,7 @@
     - python-virtualenv
     - git
     - pulseaudio
+    - pulseaudio-module-bluetooth
     - pulseaudio-module-zeroconf
     - python-gst-1.0
     - gstreamer1.0-tools
@@ -36,6 +37,11 @@
     - libffi-dev
     - libspotify-dev
     - php5-cli
+  - name: create fonos directory
+    file:
+      path: "{{fonos_path}}"
+      state: directory
+      mode: 0755
   - name: copy requirements.txt
     copy: src=./requirements.txt dest={{fonos_path}}/requirements.txt
   - name: setup virtualenv
@@ -67,7 +73,7 @@
       mode: 0755
   - name: create pulse config directory
     file:
-      path: "{{ansible_env.HOME}}/.config/pulse"
+      path: "{{ansible_env.HOME}}/.pulse"
       state: directory
       mode: 0755
   - name: create systemd config directory
@@ -83,10 +89,10 @@
     with_items:
     - client.conf
     - daemon.conf
-    - init.pa
+    - default.pa
     copy:
       src: ./pulse-{{item}}
-      dest: "{{ansible_env.HOME}}/.config/pulse/{{item}}"
+      dest: "{{ansible_env.HOME}}/.pulse/{{item}}"
   - name: automatically start pi systemd units
     become: yes
     command: loginctl enable-linger pi
@@ -111,4 +117,3 @@
       name: "{{item}}"
       state: started
       user: yes
-
